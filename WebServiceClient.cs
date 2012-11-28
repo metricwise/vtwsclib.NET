@@ -74,13 +74,29 @@ namespace Vtiger
             return GetRequest(dictionary);
         }
 
+        public void AsyncUpdate(JToken element, WebServiceDataHandler callback)
+        {
+            Dictionary<string, string> dictionary = GetUpdateDictionary(element);
+            WebServiceAsyncRequest request = new WebServiceAsyncRequest();
+            byte[] postData = ToPostData(dictionary);
+            request.OnException += OnException;
+            request.OnData += callback;
+            request.Begin(serverURL, postData);
+        }
+
         public JToken DoUpdate(JToken element)
+        {
+            Dictionary<string, string> dictionary = GetUpdateDictionary(element);
+            return PostRequest(dictionary);
+        }
+
+        private Dictionary<string, string> GetUpdateDictionary(JToken element)
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
             dictionary["operation"] = "update";
             dictionary["sessionName"] = sessionName;
             dictionary["element"] = element.ToString();
-            return PostRequest(dictionary);
+            return dictionary;
         }
 
         private string GetChallengeToken(string username)
@@ -155,14 +171,17 @@ namespace Vtiger
 
         private JToken ParseResponse(WebRequest request)
         {
-            JObject data = null;
             WebResponse response = request.GetResponse();
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
             string json = reader.ReadToEnd();
-            data = JObject.Parse(json);
             reader.Close();
             response.Close();
+            return ParseJson(json);
+        }
+
+        private JToken ParseJson(string json) {
+            JObject data = JObject.Parse(json);
             if ("true" != data["success"].ToString())
             {
                 throw new WebServiceException(data["error"]);
