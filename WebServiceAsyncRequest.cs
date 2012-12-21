@@ -28,6 +28,7 @@ namespace Vtiger
         private byte[] postData;
         private WebRequest request;
         private string requestURI;
+        private int retryCount;
 
         public void Begin(string requestURI)
         {
@@ -38,6 +39,7 @@ namespace Vtiger
         {
             this.requestURI = requestURI;
             this.postData = postData;
+            this.retryCount = 0;
             try
             {
                 Thread thread = new Thread(new ThreadStart(Start));
@@ -54,6 +56,7 @@ namespace Vtiger
             try
             {
                 request = System.Net.WebRequest.Create(requestURI);
+                request.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy();
                 if (null != postData)
                 {
                     request.ContentLength = postData.Length;
@@ -82,6 +85,18 @@ namespace Vtiger
                 stream.Write(postData, 0, postData.Length);
                 stream.Close();
                 request.BeginGetResponse(new AsyncCallback(GetResponseCallback), request);
+            }
+            catch (WebException e)
+            {
+                if (retryCount < 3)
+                {
+                    ++retryCount;
+                    Start();
+                }
+                else
+                {
+                    OnException(e);
+                }
             }
             catch (Exception e)
             {

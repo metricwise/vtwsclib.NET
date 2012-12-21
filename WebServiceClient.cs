@@ -120,6 +120,7 @@ namespace Vtiger
             try
             {
                 WebRequest request = System.Net.WebRequest.Create(url);
+                request.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy(); 
                 request.Method = "GET";
                 data = ParseResponse(request);
             }
@@ -136,6 +137,7 @@ namespace Vtiger
             try
             {
                 WebRequest request = System.Net.WebRequest.Create(serverURL);
+                request.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy();
                 byte[] postData = ToPostData(dictionary);
                 request.ContentLength = postData.Length;
                 request.ContentType = "application/x-www-form-urlencoded";
