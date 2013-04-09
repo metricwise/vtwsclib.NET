@@ -50,6 +50,20 @@ namespace Vtiger
             return data;
         }
 
+        public JToken DoLoginPassword(string userName, string password)
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            dictionary["operation"] = "login.password";
+            dictionary["user_name"] = userName;
+            dictionary["user_password"] = password;
+            JToken data = PostRequest(dictionary);
+            if (data != null)
+            {
+                sessionName = data["sessionName"].Value<string>();
+            }
+            return data;
+        }
+
         public void DoLogout()
         {
             if (sessionName.Length > 0)
