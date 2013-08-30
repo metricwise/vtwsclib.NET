@@ -79,6 +79,14 @@ namespace Vtiger
             }
         }
 
+        public JToken DoDescribe(string module) {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            dictionary["elementType"] = module;
+            dictionary["operation"] = "describe";
+            dictionary["sessionName"] = sessionName;
+            return GetRequest(dictionary);
+        }
+
         public JToken DoQuery(string query)
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
