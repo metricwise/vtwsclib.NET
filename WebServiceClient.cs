@@ -139,16 +139,31 @@ namespace Vtiger
         {
             JToken data = null;
             String url = serverURL + "?" + ToGetString(dictionary);
-            try
+            for (int retryCount = 0; retryCount < 3; retryCount++)
             {
-                WebRequest request = System.Net.WebRequest.Create(url);
-                request.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy(); 
-                request.Method = "GET";
-                data = ParseResponse(request);
-            }
-            catch (Exception exception)
-            {
-                OnException(exception);
+                try
+                {
+                    WebRequest request = System.Net.WebRequest.Create(url);
+                    request.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy();
+                    request.Method = "GET";
+                    data = ParseResponse(request);
+                    break;
+                }
+                catch (WebException e)
+                {
+                    if (retryCount < 3)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        OnException(e);
+                    }
+                }
+                catch (Exception e)
+                {
+                    OnException(e);
+                }
             }
             return data;
         }
