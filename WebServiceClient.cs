@@ -79,9 +79,9 @@ namespace Vtiger
             }
         }
 
-        public JToken DoDescribe(string module) {
+        public JToken DoDescribe(string elementType) {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            dictionary["elementType"] = module;
+            dictionary["elementType"] = elementType;
             dictionary["operation"] = "describe";
             dictionary["sessionName"] = sessionName;
             return GetRequest(dictionary);
@@ -93,6 +93,16 @@ namespace Vtiger
             dictionary["operation"] = "query";
             dictionary["query"] = query;
             dictionary["sessionName"] = sessionName;
+            return GetRequest(dictionary);
+        }
+
+        public JToken DoSync(string modifiedTime, string elementType)
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            dictionary["operation"] = "sync";
+            dictionary["sessionName"] = sessionName;
+            dictionary["modifiedTime"] = modifiedTime;
+            dictionary["elementType"] = elementType;
             return GetRequest(dictionary);
         }
 
