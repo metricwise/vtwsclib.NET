@@ -7,7 +7,7 @@
     <ProjectGuid>{E39EC7A7-827A-48BE-AC82-0E2578F9413C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>vtwsclib.NET</RootNamespace>
+    <RootNamespace>Vtiger</RootNamespace>
     <AssemblyName>vtwsclib.NET</AssemblyName>
     <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PlatformFamilyName>PocketPC</PlatformFamilyName>
@@ -54,6 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\WebServiceDataAdapter.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebServiceAsyncRequest.cs" />
     <Compile Include="WebServiceClient.cs" />

@@ -212,7 +212,8 @@ namespace Vtiger
             StringBuilder query = new StringBuilder();
             foreach (string key in dictionary.Keys)
             {
-                query.Append(string.Format("{0}={1}", System.Uri.EscapeDataString(key), System.Uri.EscapeDataString(dictionary[key])));
+                string value = dictionary[key];
+                query.Append(string.Format("{0}={1}", System.Uri.EscapeDataString(key), System.Uri.EscapeDataString(value)));
                 query.Append("&");
             }
             return query.ToString();
