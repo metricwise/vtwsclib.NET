@@ -12,9 +12,12 @@ using LastModifiedDictionary = System.Collections.Generic.Dictionary<string, Sys
 
 namespace Vtiger.Data
 {
+    public delegate void BeforeImportHandler(DataTable table, DataRow row);
+
     public class WebServiceDataAdapter : DataAdapter
     {
         public LastModifiedDictionary lastModifiedDict = new LastModifiedDictionary();
+        public event BeforeImportHandler BeforeImport;
         private WebServiceClient webServiceClient = null;
 
         public WebServiceDataAdapter(WebServiceClient client)
@@ -44,6 +47,10 @@ namespace Vtiger.Data
                     DataTable mergeTable = dataSet.Tables[table.TableName].Clone();
                     foreach (DataRow row in dataTable.Rows)
                     {
+                        if (null != BeforeImport)
+                        {
+                            BeforeImport(mergeTable, row);
+                        }
                         mergeTable.ImportRow(row);
                     }
                     dataSet.Merge(mergeTable);
