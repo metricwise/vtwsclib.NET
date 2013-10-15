@@ -29,6 +29,8 @@ namespace Vtiger
         private WebRequest request;
         private string requestURI;
         private int retryCount;
+        private int retryDelay;
+        private int retryMax;
 
         public void Begin(string requestURI)
         {
@@ -40,15 +42,9 @@ namespace Vtiger
             this.requestURI = requestURI;
             this.postData = postData;
             this.retryCount = 0;
-            try
-            {
-                Thread thread = new Thread(new ThreadStart(Start));
-                thread.Start();
-            }
-            catch (Exception e)
-            {
-                OnException(e);
-            }
+            this.retryDelay = 1024;
+            this.retryMax = 4;
+            Start();
         }
 
         private void Start()
@@ -70,6 +66,21 @@ namespace Vtiger
                     request.BeginGetResponse(new AsyncCallback(GetResponseCallback), request);
                 }
             }
+            catch (OutOfMemoryException e)
+            {
+                if (retryCount < retryMax)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    ++retryCount;
+                    Random random = new Random();
+                    Thread.Sleep(retryDelay * random.Next(retryCount * retryCount));
+                    Start();
+                }
+                else
+                {
+                    OnException(e);
+                }
+            }
             catch (Exception e)
             {
                 OnException(e);
@@ -88,10 +99,11 @@ namespace Vtiger
             }
             catch (WebException e)
             {
-                if (retryCount < 3)
+                if (retryCount < retryMax)
                 {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                     ++retryCount;
-                    Start();
+                    Start(); 
                 }
                 else
                 {
