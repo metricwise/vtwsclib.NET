@@ -82,7 +82,7 @@ namespace Vtiger.Data
         {
         }
 
-        private DataTable ToDataTable(JToken token)
+        public DataTable ToDataTable(JToken token)
         {
             if (!(token is JArray))
             {
