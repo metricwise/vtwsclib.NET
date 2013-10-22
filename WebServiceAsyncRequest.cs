@@ -25,6 +25,7 @@ namespace Vtiger
         public event WebServiceDataHandler OnData;
         public event WebServiceExceptionHandler OnException;
 
+        private string json;
         private byte[] postData;
         private WebRequest request;
         private string requestURI;
@@ -92,9 +93,10 @@ namespace Vtiger
             try
             {
                 WebRequest request = (WebRequest)result.AsyncState;
-                Stream stream = request.EndGetRequestStream(result);
-                stream.Write(postData, 0, postData.Length);
-                stream.Close();
+                using (Stream stream = request.EndGetRequestStream(result))
+                {
+                    stream.Write(postData, 0, postData.Length);
+                }
                 request.BeginGetResponse(new AsyncCallback(GetResponseCallback), request);
             }
             catch (WebException e)
@@ -121,14 +123,15 @@ namespace Vtiger
             try
             {
                 WebRequest request = (WebRequest)result.AsyncState;
-                WebResponse response = request.EndGetResponse(result);
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                string json = reader.ReadToEnd();
-                reader.Close();
-                response.Close();
-                JToken data = ParseJson(json);
-                OnData(data);
+                using (WebResponse response = request.EndGetResponse(result))
+                {
+                    Stream stream = response.GetResponseStream();
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        json = reader.ReadToEnd();
+                    }
+                }
+                ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessJson));
             }
             catch (Exception e)
             {
@@ -136,14 +139,18 @@ namespace Vtiger
             }
         }
 
-        private JToken ParseJson(string json)
+        private void ProcessJson(object target)
         {
             JObject data = JObject.Parse(json);
             if ("true" != data["success"].ToString())
             {
-                throw new WebServiceException(data["error"]);
+                OnException(new WebServiceException(data["error"]));
             }
-            return (JToken)data["result"];
+            JToken result = (JToken)data["result"];
+            if (null != OnData)
+            {
+                OnData(result);
+            }
         }
     }
 }

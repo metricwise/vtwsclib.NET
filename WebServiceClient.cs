@@ -106,13 +106,21 @@ namespace Vtiger
             return GetRequest(dictionary);
         }
 
+        public void AsyncUpdate(JToken element)
+        {
+            AsyncUpdate(element, null);
+        }
+
         public void AsyncUpdate(JToken element, WebServiceDataHandler callback)
         {
             Dictionary<string, string> dictionary = GetUpdateDictionary(element);
             WebServiceAsyncRequest request = new WebServiceAsyncRequest();
             byte[] postData = ToPostData(dictionary);
             request.OnException += OnException;
-            request.OnData += callback;
+            if (null != callback)
+            {
+                request.OnData += callback;
+            }
             request.Begin(serverURL, postData);
         }
 

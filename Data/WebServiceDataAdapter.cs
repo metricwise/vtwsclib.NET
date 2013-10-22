@@ -70,16 +70,12 @@ namespace Vtiger.Data
                     switch (row.RowState)
                     {
                         case DataRowState.Modified:
-                            webServiceClient.AsyncUpdate(token, new WebServiceDataHandler(OnUpdate));
+                            webServiceClient.AsyncUpdate(token);
                             break;
                     }
                 }
             }
             return updated;
-        }
-
-        private void OnUpdate(JToken token)
-        {
         }
 
         public DataTable ToDataTable(JToken token)
