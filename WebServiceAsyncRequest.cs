@@ -141,15 +141,22 @@ namespace Vtiger
 
         private void ProcessJson(object target)
         {
-            JObject data = JObject.Parse(json);
-            if ("true" != data["success"].ToString())
+            try
             {
-                OnException(new WebServiceException(data["error"]));
+                JObject data = JObject.Parse(json);
+                if ("true" != data["success"].ToString())
+                {
+                    throw new WebServiceException(data["error"]);
+                }
+                JToken result = (JToken)data["result"];
+                if (null != OnData)
+                {
+                    OnData(result);
+                }
             }
-            JToken result = (JToken)data["result"];
-            if (null != OnData)
+            catch (Exception e)
             {
-                OnData(result);
+                OnException(e);
             }
         }
     }

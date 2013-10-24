@@ -70,9 +70,10 @@ namespace Vtiger.Data
                     switch (row.RowState)
                     {
                         case DataRowState.Modified:
-                            webServiceClient.AsyncUpdate(token);
+                            webServiceClient.DoUpdate(token);
                             break;
                     }
+                    row.AcceptChanges();
                 }
             }
             return updated;
