@@ -61,6 +61,7 @@
     <Compile Include="WebServiceAsyncRequest.cs" />
     <Compile Include="WebServiceClient.cs" />
     <Compile Include="WebServiceException.cs" />
+    <Compile Include="WebServiceRetry.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JSON.NET\Newtonsoft.Json\Newtonsoft.Json.Compact.csproj">

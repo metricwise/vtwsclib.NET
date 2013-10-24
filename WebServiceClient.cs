@@ -157,31 +157,20 @@ namespace Vtiger
         {
             JToken data = null;
             String url = serverURL + "?" + ToGetString(dictionary);
-            for (int retryCount = 0; retryCount < 3; retryCount++)
+            try
             {
-                try
+                Action action = delegate()
                 {
                     WebRequest request = System.Net.WebRequest.Create(url);
                     request.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy();
                     request.Method = "GET";
                     data = ParseResponse(request);
-                    break;
-                }
-                catch (WebException e)
-                {
-                    if (retryCount < 3)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        OnException(e);
-                    }
-                }
-                catch (Exception e)
-                {
-                    OnException(e);
-                }
+                };
+                WebServiceRetry.ExponentialBackoff(action, TimeSpan.FromMilliseconds(512), 3);
+            }
+            catch (Exception e)
+            {
+                OnException(e);
             }
             return data;
         }
@@ -191,16 +180,20 @@ namespace Vtiger
             JToken data = null;
             try
             {
-                WebRequest request = System.Net.WebRequest.Create(serverURL);
-                request.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy();
-                byte[] postData = ToPostData(dictionary);
-                request.ContentLength = postData.Length;
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.Method = "POST";
-                Stream stream = request.GetRequestStream();
-                stream.Write(postData, 0, postData.Length);
-                stream.Close();
-                data = ParseResponse(request);
+                Action action = delegate()
+                {
+                    WebRequest request = System.Net.WebRequest.Create(serverURL);
+                    request.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy();
+                    byte[] postData = ToPostData(dictionary);
+                    request.ContentLength = postData.Length;
+                    request.ContentType = "application/x-www-form-urlencoded";
+                    request.Method = "POST";
+                    Stream stream = request.GetRequestStream();
+                    stream.Write(postData, 0, postData.Length);
+                    stream.Close();
+                    data = ParseResponse(request);
+                };
+                WebServiceRetry.ExponentialBackoff(action, TimeSpan.FromMilliseconds(512), 3);
             }
             catch (Exception exception)
             {
