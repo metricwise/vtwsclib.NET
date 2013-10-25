@@ -74,16 +74,19 @@ namespace Vtiger.Data
             int updated = 0;
             foreach (DataTable table in dataSet.Tables)
             {
-                foreach (DataRow row in table.Rows)
+                JToken token = ToToken(table);
+                for (int i = 0; i < table.Rows.Count; ++i)
                 {
-                    JToken token = ToToken(row);
+                    JToken element = token[i];
+                    DataRow row = table.Rows[i];
                     switch (row.RowState)
                     {
                         case DataRowState.Modified:
-                            webServiceClient.DoUpdate(token);
+                            webServiceClient.DoUpdate(element);
+                            updated++;
+                            row.AcceptChanges();
                             break;
                     }
-                    row.AcceptChanges();
                 }
             }
             return updated;
@@ -119,14 +122,15 @@ namespace Vtiger.Data
             return crmId;
         }
 
-        private JToken ToToken(DataRow row)
+        private JToken ToToken(DataTable table)
         {
-            JTokenWriter writer = new JTokenWriter();
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.Converters.Add(new DataTableConverter());
-            serializer.Serialize(writer, row);
-            JToken token = writer.Token["Table"][0];
-            return token;
+            using (JTokenWriter writer = new JTokenWriter())
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Converters.Add(new DataTableConverter());
+                serializer.Serialize(writer, table);
+                return writer.Token;
+            }
         }
 
         private int ToUnixTime(DateTime dateTime)
