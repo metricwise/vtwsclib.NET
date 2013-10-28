@@ -29,6 +29,7 @@ namespace Vtiger.Data
         public LastModifiedDictionary lastModifiedDict = new LastModifiedDictionary();
         public event BeforeImportHandler BeforeImport;
         private WebServiceClient webServiceClient = null;
+        private WebServiceDateTimeConverter dateTimeConverter = new WebServiceDateTimeConverter();
 
         public WebServiceDataAdapter(WebServiceClient client)
         {
@@ -49,7 +50,7 @@ namespace Vtiger.Data
                 {
                     lastModified = DateTime.Now - TimeSpan.FromDays(90); // TODO: 90 days is arbitrary
                 }
-                int modifiedTime = ToUnixTime(lastModified);
+                int modifiedTime = dateTimeConverter.ToUnixTime(lastModified);
                 JToken token = webServiceClient.DoSync(modifiedTime.ToString(), table.TableName);
                 if (token != null)
                 {
@@ -126,19 +127,18 @@ namespace Vtiger.Data
         {
             using (JTokenWriter writer = new JTokenWriter())
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Converters.Add(new DataTableConverter());
+                JsonSerializer serializer = GetJsonSerializer();
                 serializer.Serialize(writer, table);
                 return writer.Token;
             }
         }
 
-        private int ToUnixTime(DateTime dateTime)
+        private JsonSerializer GetJsonSerializer()
         {
-            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime();
-            TimeSpan span = dateTime - epoch;
-            int unixtime = (int)Math.Round(span.TotalSeconds);
-            return unixtime;
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Converters.Add(new DataTableConverter());
+            //serializer.Converters.Add(dateTimeConverter);
+            return serializer;
         }
     }
 }

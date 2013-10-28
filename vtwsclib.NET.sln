@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vtwsclib.NET", "vtwsclib.NET.csproj", "{E39EC7A7-827A-48BE-AC82-0E2578F9413C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Newtonsoft.Json.Compact", "..\JSON.NET\Newtonsoft.Json\Newtonsoft.Json.Compact.csproj", "{256AA604-F61B-4B6D-8D51-C8E6AB11E435}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vtwsclib.NET.tests", "vtwsclib.NET.tests\vtwsclib.NET.tests.csproj", "{C8C7DD8A-4BC6-4EA1-A776-ACA2D759BA58}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2DF0B43B-8D56-4BDC-A0AD-187DB98779CE}"
+	ProjectSection(SolutionItems) = preProject
+		SmartDeviceTestRun.testrunConfig = SmartDeviceTestRun.testrunConfig
+		vtwsclib.NET.vsmdi = vtwsclib.NET.vsmdi
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = vtwsclib.NET.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E39EC7A7-827A-48BE-AC82-0E2578F9413C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E39EC7A7-827A-48BE-AC82-0E2578F9413C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E39EC7A7-827A-48BE-AC82-0E2578F9413C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E39EC7A7-827A-48BE-AC82-0E2578F9413C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{256AA604-F61B-4B6D-8D51-C8E6AB11E435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{256AA604-F61B-4B6D-8D51-C8E6AB11E435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{256AA604-F61B-4B6D-8D51-C8E6AB11E435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{256AA604-F61B-4B6D-8D51-C8E6AB11E435}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8C7DD8A-4BC6-4EA1-A776-ACA2D759BA58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8C7DD8A-4BC6-4EA1-A776-ACA2D759BA58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8C7DD8A-4BC6-4EA1-A776-ACA2D759BA58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8C7DD8A-4BC6-4EA1-A776-ACA2D759BA58}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
