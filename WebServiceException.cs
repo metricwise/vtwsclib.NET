@@ -15,7 +15,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Vtiger
 {
-    class WebServiceException : Exception
+    public class WebServiceException : Exception
     {
         public WebServiceException(JToken error) : base(error["message"].ToString())
         {
